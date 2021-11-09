@@ -3,6 +3,7 @@ import useSWR from 'swr';
 import { gqlClient } from '../api/client';
 import { GetArticlesQuery } from '../api/query';
 import { GqlServerArticles } from '../api/types';
+import type { ErrorReponseType } from '../api/type';
 
 export function Articles() {
   const { data, error } = useSWR<GqlServerArticles>(
@@ -11,7 +12,9 @@ export function Articles() {
   );
 
   if (error) {
-    throw error;
+    const { response }: { response: ErrorReponseType } = error;
+
+    return <p>{response.error}</p>;
   }
   if (!data) {
     return <p>loading...</p>;

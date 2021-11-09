@@ -1,9 +1,16 @@
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
+import {
+  act,
+  render,
+  cleanup,
+  screen,
+  RenderResult,
+} from '@testing-library/react';
 import { GqlServerArticles } from '~/api/types';
 import { Articles } from './Articles';
 import { gqlClient } from '~/api/client';
 import { SWRConfig } from 'swr';
+import type { ErrorReponseType } from '../api/type';
 
 const dummyArticles: GqlServerArticles = {
   _helloworld_article: [
@@ -43,27 +50,58 @@ const dummyArticles: GqlServerArticles = {
   ],
 };
 
+const errorResponse: ErrorReponseType = {
+  path: '$',
+  code: 'no-found',
+  error: 'hogehoge',
+  status: 404,
+  headers: {
+    map: {
+      'content-type': '"application/json; charset=utf-8"',
+    },
+  },
+};
+
 let gqlClientRequestSpy: jest.SpyInstance<unknown>;
 
-const testRender = (children: React.ReactNode) =>
-  render(<SWRConfig value={{ dedupingInterval: 0 }}>{children}</SWRConfig>);
+const testRender = (children: React.ReactNode): RenderResult => {
+  return render(
+    <SWRConfig value={{ dedupingInterval: 0 }}>{children}</SWRConfig>
+  );
+};
+
+afterEach(() => cleanup());
+
+beforeEach(() => {
+  gqlClientRequestSpy = jest.spyOn(gqlClient, 'request');
+});
 
 describe('Articles', () => {
-  beforeEach(() => {
-    gqlClientRequestSpy = jest.spyOn(gqlClient, 'request');
-  });
-
   it('データ取得成功', async () => {
-    gqlClientRequestSpy.mockImplementation(() =>
-      Promise.resolve(dummyArticles)
-    );
-
-    await act(async () => {
-      testRender(<Articles />);
+    act(() => {
+      gqlClientRequestSpy.mockImplementation(() =>
+        Promise.resolve(dummyArticles)
+      );
     });
 
-    expect(gqlClientRequestSpy).toHaveBeenCalled();
+    testRender(<Articles />);
 
-    // screen.debug();
+    expect(
+      await screen.findByText(
+        `title: ${dummyArticles._helloworld_article[0].title}`
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('データ取得失敗', async () => {
+    act(() => {
+      gqlClientRequestSpy.mockImplementation(() =>
+        Promise.reject({ response: errorResponse })
+      );
+    });
+
+    testRender(<Articles />);
+
+    expect(await screen.findByText(errorResponse.error)).toBeInTheDocument();
   });
 });
