@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   act,
   render,
@@ -70,7 +69,7 @@ const testRender = (children: React.ReactNode): RenderResult => {
   );
 };
 
-afterEach(() => cleanup());
+afterEach(cleanup);
 
 beforeEach(() => {
   gqlClientRequestSpy = jest.spyOn(gqlClient, 'request');

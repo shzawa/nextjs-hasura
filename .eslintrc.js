@@ -14,6 +14,7 @@ module.exports = {
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
+    'plugin:react-hooks/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -23,7 +24,7 @@ module.exports = {
     ecmaVersion: 11,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['react', '@typescript-eslint', 'jest'],
   rules: {
     semi: 'error',
     'newline-before-return': 'error',
@@ -31,7 +32,10 @@ module.exports = {
     'no-var': 'error',
     'import/prefer-default-export': 'off',
     'react/react-in-jsx-scope': 'off',
-    'eslint-plugin-react-hooks': 'error',
-    // 'react-hooks/exhaustive-deps': 'warn',
+    'jest/no-disabled-tests': 'warn',
+    'jest/no-focused-tests': 'error',
+    'jest/no-identical-title': 'error',
+    'jest/prefer-to-have-length': 'warn',
+    'jest/valid-expect': 'error',
   },
 };

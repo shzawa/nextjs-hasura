@@ -1,31 +1,28 @@
 const config = {
-  testEnvironment: "jsdom",
-  testMatch: ["**/*.test.ts", "**/*.test.tsx"],
-  "setupFilesAfterEnv": ["./jest.setup.js"],
-  testPathIgnorePatterns: [
-    "<rootDir>/node_modules/",
-    "<rootDir>/.next/",
-  ],
+  testEnvironment: 'jsdom',
+  testMatch: ['**/*.test.ts', '**/*.test.tsx'],
+  setupFilesAfterEnv: ['./jest.setup.js'],
+  testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/'],
   moduleNameMapper: {
-    "^~/(.*)": "<rootDir>/src/$1"
+    '^~/(.*)': '<rootDir>/src/$1',
   },
-  transformIgnorePatterns: ["/node_modules/"],
+  transformIgnorePatterns: ['/node_modules/'],
   transform: {
-    ".+\\.(t|j)sx?$": [
-      "@swc/jest",
+    '.+\\.(t|j)sx?$': [
+      '@swc/jest',
       {
         sourceMaps: true,
         module: {
-          type: "commonjs",
+          type: 'commonjs',
         },
         jsc: {
           parser: {
-            syntax: "typescript",
+            syntax: 'typescript',
             tsx: true,
           },
           transform: {
             react: {
-              runtime: "automatic",
+              runtime: 'automatic',
             },
           },
         },

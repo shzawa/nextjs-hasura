@@ -1,4 +1,3 @@
-import React from 'react';
 import useSWR from 'swr';
 import { gqlClient } from '../api/client';
 import { GetArticlesQuery } from '../api/query';
