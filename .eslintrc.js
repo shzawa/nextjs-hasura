@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
     node: true,
-    jest: true,
+    'jest/globals': true,
   },
   extends: [
     'next',
@@ -26,9 +26,12 @@ module.exports = {
   plugins: ['react', '@typescript-eslint'],
   rules: {
     semi: 'error',
-    'import/prefer-default-export': 'off',
     'newline-before-return': 'error',
     'no-console': 'warn',
     'no-var': 'error',
+    'import/prefer-default-export': 'off',
+    'react/react-in-jsx-scope': 'off',
+    'eslint-plugin-react-hooks': 'error',
+    // 'react-hooks/exhaustive-deps': 'warn',
   },
 };
