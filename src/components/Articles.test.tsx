@@ -1,9 +1,10 @@
 import {
-  act,
   render,
   cleanup,
   screen,
   RenderResult,
+  waitForElementToBeRemoved,
+  waitFor,
 } from '@testing-library/react';
 import { GqlServerArticles } from '~/api/types';
 import { Articles } from './Articles';
@@ -49,6 +50,10 @@ const dummyArticles: GqlServerArticles = {
   ],
 };
 
+const dummyEmptyArticles: GqlServerArticles = {
+  _helloworld_article: [],
+};
+
 const errorResponse: ErrorReponseType = {
   path: '$',
   code: 'no-found',
@@ -76,31 +81,52 @@ beforeEach(() => {
 });
 
 describe('Articles', () => {
-  it('データ取得成功', async () => {
-    act(() => {
-      gqlClientRequestSpy.mockImplementation(() =>
-        Promise.resolve(dummyArticles)
-      );
-    });
-
+  test('描画テスト:loading', async () => {
     testRender(<Articles />);
-
-    expect(
-      await screen.findByText(
-        `title: ${dummyArticles._helloworld_article[0].title}`
-      )
-    ).toBeInTheDocument();
+    screen.getByText('loading...');
+    await waitForElementToBeRemoved(() => screen.getByText('loading...'));
   });
 
-  it('データ取得失敗', async () => {
-    act(() => {
-      gqlClientRequestSpy.mockImplementation(() =>
-        Promise.reject({ response: errorResponse })
-      );
-    });
+  test('描画テスト:データ取得成功1件以上', async () => {
+    gqlClientRequestSpy.mockImplementation(() =>
+      Promise.resolve(dummyArticles)
+    );
 
     testRender(<Articles />);
 
-    expect(await screen.findByText(errorResponse.error)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByText(`title: ${dummyArticles._helloworld_article[0].title}`)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(`title: ${dummyArticles._helloworld_article[1].title}`)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(`title: ${dummyArticles._helloworld_article[2].title}`)
+      ).toBeInTheDocument();
+    });
+  });
+
+  test('描画テスト:データ取得成功0件', async () => {
+    gqlClientRequestSpy.mockImplementation(() =>
+      Promise.resolve(dummyEmptyArticles)
+    );
+    testRender(<Articles />);
+
+    await waitFor(() => {
+      expect(screen.getByText('no article')).toBeInTheDocument();
+    });
+  });
+
+  test('データ取得失敗', async () => {
+    gqlClientRequestSpy.mockImplementation(() =>
+      Promise.reject({ response: errorResponse })
+    );
+
+    testRender(<Articles />);
+
+    await waitFor(() => {
+      expect(screen.getByText(errorResponse.error)).toBeInTheDocument();
+    });
   });
 });
