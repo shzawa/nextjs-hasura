@@ -1,10 +1,20 @@
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const AsPathSample = () => {
   const router = useRouter();
   const path = router.asPath;
+  const { page } = router.query;
 
-  return <h1>このページの path は {path} です。</h1>;
+  useEffect(() => {
+    page === 'login' && router.push('/login'); // FIXME
+  }, [page, router]);
+
+  return (
+    <>
+      <h1>このページのpathは{`"${path}"`}です。</h1>
+    </>
+  );
 };
 
 export default AsPathSample;

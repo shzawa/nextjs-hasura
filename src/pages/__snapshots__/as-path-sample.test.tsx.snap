@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`初期表示 サンプルページ 1`] = `
-<DocumentFragment>
-  <h1>
-    このページの path は / です。
-  </h1>
-</DocumentFragment>
-`;
