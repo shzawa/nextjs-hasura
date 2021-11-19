@@ -83,7 +83,7 @@ beforeEach(() => {
 describe('Articles', () => {
   test('描画テスト:loading', async () => {
     testRender(<Articles />);
-    screen.getByText('loading...');
+    expect(screen.getByText('loading...')).toBeInTheDocument();
     await waitForElementToBeRemoved(() => screen.getByText('loading...'));
   });
 
